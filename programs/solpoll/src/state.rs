@@ -5,7 +5,7 @@ use anchor_lang::prelude::*;
 #[instruction(title: String, description: String)]
 pub struct Poll {
     /// Address of the poll
-    pub address: Pubkey,
+    pub poll_id: u64,
 
     /// Title of the poll
     #[max_len(32)]
@@ -15,18 +15,11 @@ pub struct Poll {
     #[max_len(256)]
     pub description: String,
 
-    /// List of options for the poll
-    pub options: VoteType,
-
-    /// List of voters for the poll
-    #[max_len(100)]
-    pub voters: Vec<Voters>,
-
     /// Start time of the poll
-    pub start_time: i64,
+    pub start_time: u64,
 
     /// End time of the poll
-    pub end_time: i64,
+    pub end_time: u64,
 
     /// Total Up votes for the poll
     pub total_up_vote: u64,
@@ -36,6 +29,15 @@ pub struct Poll {
 
     /// Total votes for the poll
     pub total_vote: u64,
+
+    /// Result visible untill
+    pub result_visible_until: u64,
+
+    /// Bump seed for the poll
+    pub bump: u8,
+
+    /// State of the poll
+    pub state: PollState,
 }
 
 #[derive(InitSpace, Clone, Copy, AnchorSerialize, AnchorDeserialize)]
@@ -52,4 +54,16 @@ pub enum VoteType {
     UpVote,
     DownVote,
     Abstain,
+}
+
+#[derive(InitSpace, Clone, Copy, AnchorSerialize, AnchorDeserialize)]
+pub enum PollState {
+    /// Poll is active and can be voted on
+    Active,
+
+    /// Poll is closed and no more votes can be cast
+    Closed,
+
+    /// Poll is closed and results are being displayed
+    DisplayingResults,
 }
