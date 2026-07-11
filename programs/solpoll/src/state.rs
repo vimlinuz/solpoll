@@ -63,9 +63,6 @@ pub enum PollState {
 
     /// Poll is closed and no more votes can be cast
     Closed,
-
-    /// Poll is closed and results are being displayed
-    DisplayingResults,
 }
 
 #[account]
