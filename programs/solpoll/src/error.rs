@@ -11,6 +11,9 @@ pub enum PollError {
     #[msg("Poll have already endend")]
     PollAlreadyEnded,
 
+    #[msg("Poll haven't ended yet")]
+    PollNotEnded,
+
     #[msg("Poll is inactive")]
     InactivePoll,
 
