@@ -41,15 +41,6 @@ pub struct Poll {
 }
 
 #[derive(InitSpace, Clone, Copy, AnchorSerialize, AnchorDeserialize)]
-pub struct Voters {
-    /// Address of the voter
-    pub address: Pubkey,
-
-    /// Vote type of the voter
-    pub vote_type: VoteType,
-}
-
-#[derive(InitSpace, Clone, Copy, AnchorSerialize, AnchorDeserialize)]
 pub enum VoteType {
     UpVote,
     DownVote,
@@ -66,4 +57,16 @@ pub enum PollState {
 
     /// Poll is closed and results are being displayed
     DisplayingResults,
+}
+
+#[account]
+#[derive(InitSpace)]
+pub struct VoterState {
+    /// Type of the vote
+    pub vote_type: VoteType,
+
+    pub has_voted: bool,
+
+    /// Timestamp of the vote
+    pub voted_at: u64,
 }
