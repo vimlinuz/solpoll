@@ -32,6 +32,6 @@ pub mod solpoll {
     }
 
     pub fn close_poll(ctx: Context<ClosePoll>, poll_id: u64) -> Result<()> {
-        close_poll::close_poll
+        close_poll::close_poll(ctx, poll_id)
     }
 }
