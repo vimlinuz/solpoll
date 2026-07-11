@@ -13,9 +13,21 @@ declare_id!("4xxrNmrhWuF1K6rBQdpNQbPL2gWEC9TYJPaNX9HHBXBL");
 
 #[program]
 pub mod solpoll {
+
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        initialize::handler(ctx)
+    pub fn initialize_poll(
+        ctx: Context<InitializePoll>,
+        poll_id: u64,
+        title: String,
+        description: String,
+        start_time: u64,
+        end_time: u64,
+    ) -> Result<()> {
+        initialize_poll::initialize_poll(ctx, poll_id, title, description, start_time, end_time)
+    }
+
+    pub fn cast_vote(ctx: Context<Vote>, poll_id: u64, vote_type: VoteType) -> Result<()> {
+        cast_vote::cast_vote(ctx, poll_id, vote_type)
     }
 }

@@ -17,9 +17,6 @@ pub enum PollError {
     #[msg("Already voted")]
     AlreadyVoted,
 
-    #[msg("Invalid result visible duration")]
-    InvalidResultVisibleDuration,
-
     #[msg("Invalid title")]
     InvalidTitle,
 

@@ -32,9 +32,6 @@ pub struct Poll {
     /// Total votes for the poll
     pub total_vote: u64,
 
-    /// Result visible untill
-    pub result_visible_until: u64,
-
     /// Bump seed for the poll
     pub bump: u8,
 

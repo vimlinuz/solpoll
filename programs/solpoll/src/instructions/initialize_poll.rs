@@ -30,18 +30,12 @@ pub fn initialize_poll(
     description: String,
     start_time: u64,
     end_time: u64,
-    result_visible_until: u64,
 ) -> Result<()> {
     let poll = &mut ctx.accounts.poll;
 
     poll.poll_id = poll_id;
 
     require!(start_time < end_time, PollError::InvalidPollDuration);
-
-    require!(
-        result_visible_until > end_time,
-        PollError::InvalidResultVisibleDuration
-    );
 
     require!(
         !title.is_empty() && title.len() <= 32,
@@ -58,7 +52,6 @@ pub fn initialize_poll(
 
     poll.start_time = start_time;
     poll.end_time = end_time;
-    poll.result_visible_until = result_visible_until;
 
     poll.total_vote = 0;
     poll.total_up_vote = 0;

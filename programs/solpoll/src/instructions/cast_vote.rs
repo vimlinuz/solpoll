@@ -39,7 +39,13 @@ pub fn cast_vote(ctx: Context<Vote>, poll_id: u64, vote_type: VoteType) -> Resul
     let current_time = Clock::get()?.unix_timestamp as u64;
 
     require!(current_time > poll.start_time, PollError::PollNotStarted);
+
+    if current_time > poll.end_time {
+        poll.state = PollState::Closed;
+    }
+
     require!(current_time < poll.end_time, PollError::PollAlreadyEnded);
+
     require!(poll.state == PollState::Active, PollError::InactivePoll);
 
     require!(!voter.has_voted, PollError::AlreadyVoted);
