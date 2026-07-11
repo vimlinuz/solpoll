@@ -49,7 +49,7 @@ pub fn initialize_poll(
     );
 
     require!(
-        !description.is_empty() && description.len() <= 32,
+        !description.is_empty() && description.len() <= 256,
         PollError::InvalidDescription
     );
 
