@@ -60,7 +60,7 @@ pub fn cast_vote(ctx: Context<Vote>, poll_id: u64, vote_type: VoteType) -> Resul
 
     msg!(
         "Voter {} casted vote {} for poll {}",
-        voter.key(),
+        ctx.accounts.voter.key(),
         vote_type,
         poll_id
     );
