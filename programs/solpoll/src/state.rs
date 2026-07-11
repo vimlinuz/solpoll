@@ -1,3 +1,5 @@
+use std::fmt;
+
 use anchor_lang::prelude::*;
 
 #[account]
@@ -40,14 +42,24 @@ pub struct Poll {
     pub state: PollState,
 }
 
-#[derive(InitSpace, Clone, Copy, AnchorSerialize, AnchorDeserialize)]
+#[derive(InitSpace, Clone, Copy, AnchorSerialize, AnchorDeserialize, PartialEq)]
 pub enum VoteType {
     UpVote,
     DownVote,
     Abstain,
 }
 
-#[derive(InitSpace, Clone, Copy, AnchorSerialize, AnchorDeserialize)]
+impl fmt::Display for VoteType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            VoteType::UpVote => write!(f, "UpVote"),
+            VoteType::DownVote => write!(f, "DownVote"),
+            VoteType::Abstain => write!(f, "Abstain"),
+        }
+    }
+}
+
+#[derive(InitSpace, Clone, Copy, AnchorSerialize, AnchorDeserialize, PartialEq)]
 pub enum PollState {
     /// Poll is active and can be voted on
     Active,
