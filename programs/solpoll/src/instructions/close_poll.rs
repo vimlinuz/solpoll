@@ -20,7 +20,7 @@ pub struct ClosePoll<'info> {
     system_program: Program<'info, System>,
 }
 
-pub fn close_poll(ctx: Context<ClosePoll>, poll_id: u64) -> Result<()> {
+pub fn handle_poll_closing(ctx: Context<ClosePoll>, poll_id: u64) -> Result<()> {
     let poll = &mut ctx.accounts.poll;
     let current_time = Clock::get()?.unix_timestamp as u64;
 

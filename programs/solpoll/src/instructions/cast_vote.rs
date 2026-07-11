@@ -32,7 +32,7 @@ pub struct Vote<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn cast_vote(ctx: Context<Vote>, poll_id: u64, vote_type: VoteType) -> Result<()> {
+pub fn handle_vote_casting(ctx: Context<Vote>, poll_id: u64, vote_type: VoteType) -> Result<()> {
     let poll = &mut ctx.accounts.poll;
     let voter = &mut ctx.accounts.voter_state;
 

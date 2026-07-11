@@ -24,14 +24,21 @@ pub mod solpoll {
         start_time: u64,
         end_time: u64,
     ) -> Result<()> {
-        initialize_poll::initialize_poll(ctx, poll_id, title, description, start_time, end_time)
+        initialize_poll::handle_poll_initialization(
+            ctx,
+            poll_id,
+            title,
+            description,
+            start_time,
+            end_time,
+        )
     }
 
     pub fn cast_vote(ctx: Context<Vote>, poll_id: u64, vote_type: VoteType) -> Result<()> {
-        cast_vote::cast_vote(ctx, poll_id, vote_type)
+        cast_vote::handle_vote_casting(ctx, poll_id, vote_type)
     }
 
     pub fn close_poll(ctx: Context<ClosePoll>, poll_id: u64) -> Result<()> {
-        close_poll::close_poll(ctx, poll_id)
+        close_poll::handle_poll_closing(ctx, poll_id)
     }
 }

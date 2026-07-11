@@ -23,7 +23,7 @@ pub struct InitializePoll<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn initialize_poll(
+pub fn handle_poll_initialization(
     ctx: Context<InitializePoll>,
     poll_id: u64,
     title: String,
