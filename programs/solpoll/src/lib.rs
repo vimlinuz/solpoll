@@ -30,4 +30,8 @@ pub mod solpoll {
     pub fn cast_vote(ctx: Context<Vote>, poll_id: u64, vote_type: VoteType) -> Result<()> {
         cast_vote::cast_vote(ctx, poll_id, vote_type)
     }
+
+    pub fn close_poll(ctx: Context<ClosePoll>, poll_id: u64) -> Result<()> {
+        close_poll::close_poll
+    }
 }
