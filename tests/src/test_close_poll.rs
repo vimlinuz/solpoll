@@ -116,3 +116,75 @@ fn test_close_poll() {
     let tx = VersionedTransaction::try_new(VersionedMessage::Legacy(msg), &[voter]).unwrap();
     assert!(svm.send_transaction(tx).is_err());
 }
+
+#[test]
+fn test_close_poll_before_end_time() {
+    let program_id = solpoll::id();
+    let mut svm = LiteSVM::new();
+
+    let poll_id = 1 as u64;
+    let payer = Keypair::new();
+    let title = "Test Poll".to_string();
+    let description = "Test Poll Description".to_string();
+
+    let clock = svm.get_sysvar::<solana_program::clock::Clock>();
+    let start_time = clock.unix_timestamp as u64;
+    let end_time = start_time + 100;
+
+    let (poll_pda, _) =
+        Pubkey::find_program_address(&[b"poll", poll_id.to_le_bytes().as_ref()], &program_id);
+
+    svm.airdrop(&payer.pubkey(), LAMPORTS_PER_SOL * 10).unwrap();
+
+    svm.add_program_from_file(program_id, PROGRAM_PATH).unwrap();
+
+    let ix = Instruction::new_with_bytes(
+        program_id,
+        &solpoll::instruction::InitializePoll {
+            poll_id: poll_id,
+            title: title.clone(),
+            description: description.clone(),
+            start_time: start_time,
+            end_time: end_time,
+        }
+        .data(),
+        solpoll::accounts::InitializePoll {
+            payer: payer.pubkey(),
+            poll: poll_pda,
+            system_program: solana_program::system_program::ID,
+        }
+        .to_account_metas(None),
+    );
+
+    let blockhash = svm.latest_blockhash();
+    let msg = Message::new_with_blockhash(&[ix], Some(&payer.pubkey()), &blockhash);
+    let tx = VersionedTransaction::try_new(VersionedMessage::Legacy(msg), &[payer]).unwrap();
+    assert!(svm.send_transaction(tx).is_ok());
+
+    let closer = Keypair::new();
+    svm.airdrop(&closer.pubkey(), LAMPORTS_PER_SOL * 10)
+        .unwrap();
+
+    let mut clock = svm.get_sysvar::<Clock>();
+
+    // Advancing the clock time to the end of the poll event
+    clock.unix_timestamp = start_time as i64 + 20;
+    svm.set_sysvar(&clock);
+
+    let ix = Instruction::new_with_bytes(
+        program_id,
+        &solpoll::instruction::ClosePoll { poll_id: poll_id }.data(),
+        solpoll::accounts::ClosePoll {
+            closer: closer.pubkey(),
+            poll: poll_pda,
+            system_program: solana_program::system_program::ID,
+        }
+        .to_account_metas(None),
+    );
+
+    let blockhash = svm.latest_blockhash();
+    let msg = Message::new_with_blockhash(&[ix], Some(&closer.pubkey()), &blockhash);
+    let tx = VersionedTransaction::try_new(VersionedMessage::Legacy(msg), &[closer]).unwrap();
+
+    assert!(svm.send_transaction(tx).is_err());
+}
