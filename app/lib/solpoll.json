@@ -1,0 +1,353 @@
+{
+  "address": "FQC1y8nNHPZqYtc7aTJ7rRkRwVqZdtevjg1dHCEKiB6x",
+  "metadata": {
+    "name": "solpoll",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "cast_vote",
+      "discriminator": [20, 212, 15, 189, 69, 180, 69, 151],
+      "accounts": [
+        {
+          "name": "voter",
+          "docs": ["The account of the voter"],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "poll",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [112, 111, 108, 108]
+              },
+              {
+                "kind": "arg",
+                "path": "poll_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "voter_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [118, 111, 116, 101, 114]
+              },
+              {
+                "kind": "account",
+                "path": "voter"
+              },
+              {
+                "kind": "arg",
+                "path": "poll_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "poll_id",
+          "type": "u64"
+        },
+        {
+          "name": "vote_type",
+          "type": {
+            "defined": {
+              "name": "VoteType"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "close_poll",
+      "discriminator": [139, 213, 162, 65, 172, 150, 123, 67],
+      "accounts": [
+        {
+          "name": "closer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "poll",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [112, 111, 108, 108]
+              },
+              {
+                "kind": "arg",
+                "path": "poll_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "poll_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize_poll",
+      "discriminator": [193, 22, 99, 197, 18, 33, 115, 117],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "poll",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [112, 111, 108, 108]
+              },
+              {
+                "kind": "arg",
+                "path": "poll_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "poll_id",
+          "type": "u64"
+        },
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "start_time",
+          "type": "u64"
+        },
+        {
+          "name": "end_time",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Poll",
+      "discriminator": [110, 234, 167, 188, 231, 136, 153, 111]
+    },
+    {
+      "name": "VoterState",
+      "discriminator": [251, 152, 76, 161, 77, 177, 239, 208]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidPollDuration",
+      "msg": "Invalid poll duration"
+    },
+    {
+      "code": 6001,
+      "name": "PollNotStarted",
+      "msg": "Poll haven't started yet"
+    },
+    {
+      "code": 6002,
+      "name": "PollAlreadyEnded",
+      "msg": "Poll have already endend"
+    },
+    {
+      "code": 6003,
+      "name": "PollNotEnded",
+      "msg": "Poll haven't ended yet"
+    },
+    {
+      "code": 6004,
+      "name": "InactivePoll",
+      "msg": "Poll is inactive"
+    },
+    {
+      "code": 6005,
+      "name": "AlreadyVoted",
+      "msg": "Already voted"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidTitle",
+      "msg": "Invalid title"
+    },
+    {
+      "code": 6007,
+      "name": "InvalidDescription",
+      "msg": "Invalid description"
+    },
+    {
+      "code": 6008,
+      "name": "CustomError",
+      "msg": "Custom error message"
+    }
+  ],
+  "types": [
+    {
+      "name": "Poll",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "poll_id",
+            "docs": ["Address of the poll"],
+            "type": "u64"
+          },
+          {
+            "name": "title",
+            "docs": ["Title of the poll"],
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "docs": ["Description of the poll"],
+            "type": "string"
+          },
+          {
+            "name": "start_time",
+            "docs": ["Start time of the poll"],
+            "type": "u64"
+          },
+          {
+            "name": "end_time",
+            "docs": ["End time of the poll"],
+            "type": "u64"
+          },
+          {
+            "name": "total_up_vote",
+            "docs": ["Total Up votes for the poll"],
+            "type": "u64"
+          },
+          {
+            "name": "total_down_vote",
+            "docs": ["Total Down votes for the poll"],
+            "type": "u64"
+          },
+          {
+            "name": "total_vote",
+            "docs": ["Total votes for the poll"],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "docs": ["Bump seed for the poll"],
+            "type": "u8"
+          },
+          {
+            "name": "state",
+            "docs": ["State of the poll"],
+            "type": {
+              "defined": {
+                "name": "PollState"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PollState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Closed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VoteType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "UpVote"
+          },
+          {
+            "name": "DownVote"
+          },
+          {
+            "name": "Abstain"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VoterState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vote_type",
+            "docs": ["Type of the vote"],
+            "type": {
+              "defined": {
+                "name": "VoteType"
+              }
+            }
+          },
+          {
+            "name": "has_voted",
+            "type": "bool"
+          },
+          {
+            "name": "voted_at",
+            "docs": ["Timestamp of the vote"],
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "SEED",
+      "type": "string",
+      "value": "\"anchor\""
+    }
+  ]
+}
+
