@@ -1,7 +1,5 @@
 use anchor_client::{
-    anchor_lang::{
-        self, prelude::SolanaSysvar, solana_program::clock::Clock, InstructionData, ToAccountMetas,
-    },
+    anchor_lang::{self, InstructionData, ToAccountMetas},
     Instruction, Signer, VersionedTransaction,
 };
 use anchor_lang::solana_program;
@@ -22,7 +20,12 @@ fn test_poll_initialization() {
     let payer = Keypair::new();
     let title = "Test Poll".to_string();
     let description = "Test Poll Description".to_string();
-    let start_time = Clock::get().unwrap().unix_timestamp as u64;
+
+    let start_time = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_secs();
+
     let end_time = start_time + 100;
 
     let (poll_pda, _) =
