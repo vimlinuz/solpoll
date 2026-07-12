@@ -26,7 +26,7 @@ pub fn handle_poll_closing(ctx: Context<ClosePoll>, poll_id: u64) -> Result<()> 
 
     require!(poll.state == PollState::Active, PollError::InactivePoll);
     require!(current_time > poll.end_time, PollError::PollNotEnded);
-    require!(current_time < poll.start_time, PollError::PollNotStarted);
+    require!(current_time >= poll.start_time, PollError::PollNotStarted);
 
     poll.state = PollState::Closed;
 

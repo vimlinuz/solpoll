@@ -14,7 +14,7 @@ const PROGRAM_PATH: &str = "../target/deploy/solpoll.so";
 const LAMPORTS_PER_SOL: u64 = 1_000_000_000;
 
 #[test]
-fn test_cast_poll() {
+fn test_cast_vote() {
     let program_id = solpoll::id();
     let mut svm = LiteSVM::new();
 
