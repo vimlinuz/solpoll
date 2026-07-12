@@ -10,3 +10,5 @@ anchor-client = "1.0.2"
 solpoll = { version = "0.1.0", path = "../programs/solpoll" }
 solana-keypair = "3.0.0"
 solana-pubkey = "3.0.0"
+litesvm = "0.13.1"
+solana-message = "=3.1.0"

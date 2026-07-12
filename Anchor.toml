@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-solpoll = "4xxrNmrhWuF1K6rBQdpNQbPL2gWEC9TYJPaNX9HHBXBL"
+solpoll = "FQC1y8nNHPZqYtc7aTJ7rRkRwVqZdtevjg1dHCEKiB6x"
 
 [provider]
 cluster = "localnet"

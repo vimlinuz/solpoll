@@ -9,7 +9,7 @@ pub use constants::*;
 pub use instructions::*;
 pub use state::*;
 
-declare_id!("4xxrNmrhWuF1K6rBQdpNQbPL2gWEC9TYJPaNX9HHBXBL");
+declare_id!("FQC1y8nNHPZqYtc7aTJ7rRkRwVqZdtevjg1dHCEKiB6x");
 
 #[program]
 pub mod solpoll {
