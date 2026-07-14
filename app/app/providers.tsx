@@ -6,7 +6,7 @@ import { SolanaProvider } from "@solana/react-hooks";
 const defaultConfig: SolanaClientConfig = {
   cluster: "devnet",
   rpc: "https://api.devnet.solana.com",
-  websocket: "wss://api.devnet.solana.com"
+  websocket: "wss://api.devnet.solana.com",
 };
 
 export default function Providers({ children }: { children: React.ReactNode }) {

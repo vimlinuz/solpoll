@@ -52,22 +52,22 @@ export function SolTransferCard() {
   }
 
   return (
-    <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="space-y-4 rounded-xl border border-border bg-background p-5 shadow-sm">
       <div className="space-y-1">
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted">
           SOL Transfer
         </p>
-        <h2 className="text-xl font-semibold text-slate-900">
+        <h2 className="text-xl font-semibold text-foreground">
           Send SOL with the connected wallet
         </h2>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-muted">
           Uses the connected signer as the fee payer and authorizes the
           transfer.
         </p>
       </div>
       <div className="space-y-2">
         <label
-          className="text-sm font-semibold text-slate-800"
+          className="text-sm font-semibold text-foreground"
           htmlFor="destination"
         >
           Destination address
@@ -77,12 +77,12 @@ export function SolTransferCard() {
           value={destination}
           onChange={(event) => setDestination(event.target.value)}
           placeholder="Destination wallet address"
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
         />
       </div>
       <div className="space-y-2">
         <label
-          className="text-sm font-semibold text-slate-800"
+          className="text-sm font-semibold text-foreground"
           htmlFor="amount"
         >
           Amount (SOL)
@@ -94,35 +94,35 @@ export function SolTransferCard() {
           type="number"
           min="0"
           step="0.001"
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
         />
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-slate-600">Status: {statusText}</p>
+        <p className="text-sm text-muted">Status: {statusText}</p>
         <button
           type="button"
           onClick={() => void sendSol()}
           disabled={wallet.status !== "connected" || isSending}
-          className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {isSending ? "Sending…" : "Send SOL"}
+          {isSending ? "Sending\u2026" : "Send SOL"}
         </button>
       </div>
       {signature ? (
-        <div className="rounded border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+        <div className="rounded border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
           <p className="font-semibold">Transfer sent</p>
           <a
-            className="text-sky-700 underline"
+            className="text-accent underline"
             href={`https://explorer.solana.com/tx/${signature}?cluster=devnet`}
             target="_blank"
             rel="noreferrer"
           >
-            View on Solana Explorer →
+            View on Solana Explorer \u2192
           </a>
         </div>
       ) : null}
       {error ? (
-        <p className="text-sm font-semibold text-red-600">{error}</p>
+        <p className="text-sm font-semibold text-danger">{error}</p>
       ) : null}
     </section>
   );

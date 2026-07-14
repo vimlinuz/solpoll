@@ -1,20 +1,52 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.solana-dark, .solana-dark *));
+
 :root {
-    --background: #ffffff;
-    --foreground: #171717;
+  --background: #ffffff;
+  --foreground: #1a1a2e;
+  --surface: #f5f0ff;
+  --surface-alt: #ede5ff;
+  --border: #d4ccf0;
+  --muted: #6b6b80;
+  --accent: #9945ff;
+  --accent-hover: #7c3aed;
+  --success: #14f195;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+}
+
+.solana-dark {
+  --background: #000000;
+  --foreground: #eaecf0;
+  --surface: #0d0c11;
+  --surface-alt: #121212;
+  --border: #1c1b22;
+  --muted: #848895;
+  --accent: #9945ff;
+  --accent-hover: #b366ff;
+  --success: #14f195;
+  --danger: #f7768e;
+  --warning: #e0af68;
 }
 
 @theme inline {
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --font-sans: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #0a0a0a;
-        --foreground: #ededed;
-    }
+body {
+  background: var(--background);
+  color: var(--foreground);
 }

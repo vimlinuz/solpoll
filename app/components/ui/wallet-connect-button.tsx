@@ -6,7 +6,6 @@ import {
   useWallet,
 } from "@solana/react-hooks";
 
-// we also have a better and dynamic way which we can implement later
 const CONNECTORS = [
   { id: "wallet-standard:phantom", label: "Phantom" },
   { id: "wallet-standard:solflare", label: "Solflare" },
@@ -19,7 +18,7 @@ const CONNECTORS = [
 ];
 
 function truncate(address: string) {
-  return `${address.slice(0, 4)}…${address.slice(-4)}`;
+  return `${address.slice(0, 4)}\u2026${address.slice(-4)}`;
 }
 
 export function WalletConnectButton() {
@@ -59,26 +58,26 @@ export function WalletConnectButton() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex w-full items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 shadow-sm transition"
+        className="inline-flex w-full items-center justify-between gap-2 rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-semibold text-foreground shadow-sm transition"
       >
         {address ? (
           <span className="font-mono">{truncate(address)}</span>
         ) : (
           <span>Connect wallet</span>
         )}
-        <span className="text-xs text-slate-500">{open ? "▲" : "▼"}</span>
+        <span className="text-xs text-muted">{open ? "\u25b2" : "\u25bc"}</span>
       </button>
 
       {open ? (
-        <div className="absolute z-10 mt-2 w-full min-w-60 rounded-xl border border-slate-200 bg-white p-3 shadow-lg">
+        <div className="absolute z-10 mt-2 w-full min-w-60 rounded-xl border border-border bg-background p-3 shadow-lg">
           {isConnected ? (
             <div className="space-y-3">
-              <div className="rounded border border-slate-100 bg-slate-50 px-3 py-2">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">
+              <div className="rounded border border-border bg-surface px-3 py-2">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted">
                   Connected
                 </p>
                 <p
-                  className="font-mono text-sm text-slate-900"
+                  className="font-mono text-sm text-foreground"
                   title={address ?? ""}
                 >
                   {address ? truncate(address) : ""}
@@ -87,14 +86,14 @@ export function WalletConnectButton() {
               <button
                 type="button"
                 onClick={() => void handleDisconnect()}
-                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-surface"
               >
                 Disconnect
               </button>
             </div>
           ) : (
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted">
                 Wallet Standard
               </p>
               <div className="space-y-1.5">
@@ -103,17 +102,17 @@ export function WalletConnectButton() {
                     key={connector.id}
                     type="button"
                     onClick={() => void handleConnect(connector.id)}
-                    className="flex w-full items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                    className="flex w-full items-center justify-between rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-surface"
                   >
                     <span>{connector.label}</span>
-                    <span className="text-xs text-slate-500">Connect</span>
+                    <span className="text-xs text-muted">Connect</span>
                   </button>
                 ))}
               </div>
             </div>
           )}
           {error ? (
-            <p className="mt-2 text-sm font-semibold text-red-600">{error}</p>
+            <p className="mt-2 text-sm font-semibold text-danger">{error}</p>
           ) : null}
         </div>
       ) : null}
