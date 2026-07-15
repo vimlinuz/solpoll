@@ -6,7 +6,7 @@ import idl from "@/anchor-idl/idl.json";
 
 const { Connection, PublicKey, Message, Transaction } = web3;
 
-export const RPC_URL = "http://127.0.0.1:8899";
+export const RPC_URL = "https://api.devnet.solana.com";
 export const PROGRAM_ID = "FQC1y8nNHPZqYtc7aTJ7rRkRwVqZdtevjg1dHCEKiB6x";
 
 let _connection: ReturnType<typeof createConnection> | null = null;
