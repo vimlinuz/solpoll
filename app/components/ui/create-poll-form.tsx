@@ -42,11 +42,11 @@ export function CreatePollForm({
     const duration = Number(durationMin);
 
     if (!trimmedTitle || trimmedTitle.length > 32) {
-      setError("Title must be 1\u201332 characters.");
+      setError("Title must be 1-32 characters.");
       return;
     }
     if (!trimmedDesc || trimmedDesc.length > 256) {
-      setError("Description must be 1\u2013256 characters.");
+      setError("Description must be 1-256 characters.");
       return;
     }
     if (!startInMin || startOffset < 0) {
