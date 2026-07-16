@@ -61,7 +61,7 @@ export function PollList({ walletSession }: Props) {
           disabled={loading}
           className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground hover:bg-surface disabled:opacity-50"
         >
-          {loading ? "Loading\u2026" : "Refresh"}
+          {loading ? "Loading" : "Refresh"}
         </button>
       </div>
 
@@ -70,11 +70,9 @@ export function PollList({ walletSession }: Props) {
       ) : null}
 
       {loading && polls.length === 0 ? (
-        <p className="text-sm text-muted">Loading polls\u2026</p>
+        <p className="text-sm text-muted">Loading polls</p>
       ) : polls.length === 0 ? (
-        <p className="text-sm text-muted">
-          No polls found. Create one above.
-        </p>
+        <p className="text-sm text-muted">No polls found. Create one above.</p>
       ) : (
         <div className="space-y-2">
           {polls.map((poll) => (
@@ -88,7 +86,7 @@ export function PollList({ walletSession }: Props) {
                   {poll.title}
                 </p>
                 <p className="text-xs text-muted">
-                  {formatTimestamp(poll.startTime)} \u2013{" "}
+                  {formatTimestamp(poll.startTime)} -{" "}
                   {formatTimestamp(poll.endTime)}
                 </p>
               </div>

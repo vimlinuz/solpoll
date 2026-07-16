@@ -15,7 +15,7 @@ export default async function PollPage({ params }: Props) {
           href="/"
           className="text-sm text-accent hover:text-accent-hover hover:underline"
         >
-          \u2190 Back to polls
+          Back to polls
         </Link>
         <p className="text-xl font-semibold uppercase tracking-wide text-accent">
           solpoll

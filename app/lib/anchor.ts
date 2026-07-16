@@ -4,7 +4,7 @@ import { Program, AnchorProvider, web3 } from "@coral-xyz/anchor";
 import type { WalletSession } from "@solana/client";
 import idl from "@/anchor-idl/idl.json";
 
-const { Connection, PublicKey, Message, Transaction } = web3;
+const { Connection, PublicKey, VersionedTransaction, VersionedMessage } = web3;
 
 export const RPC_URL = "https://api.devnet.solana.com";
 export const PROGRAM_ID = "FQC1y8nNHPZqYtc7aTJ7rRkRwVqZdtevjg1dHCEKiB6x";
@@ -27,16 +27,12 @@ export function createProgram(walletSession: WalletSession) {
 
   const anchorWallet = {
     publicKey: new PublicKey(walletSession.account.address),
-    signTransaction: async (
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      tx: any
-    ) => {
+    signTransaction: async (tx: any) => {
       if (!walletSession.signTransaction)
         throw new Error("Wallet does not support signing");
 
       const msgBytes = tx.serializeMessage();
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const kitTx: any = {
         messageBytes: new Uint8Array(msgBytes),
         signatures: {} as Record<string, Uint8Array | null>,
@@ -51,23 +47,21 @@ export function createProgram(walletSession: WalletSession) {
 
       const signedKitTx = await walletSession.signTransaction(kitTx);
 
-      const message = Message.from(new Uint8Array(signedKitTx.messageBytes));
-      const signedTx = Transaction.populate(message, []);
+      const returnedMsgBytes = new Uint8Array(signedKitTx.messageBytes);
+      const message = VersionedMessage.deserialize(returnedMsgBytes);
+      const sigMap = signedKitTx.signatures as Record<string, Uint8Array | null>;
+      const requiredSigners = message.staticAccountKeys.slice(
+        0,
+        message.header.numRequiredSignatures
+      );
+      const signatures: Uint8Array[] = requiredSigners.map((signer: any) => {
+        const sig = sigMap[signer.toBase58()];
+        return sig ? new Uint8Array(sig) : new Uint8Array(64);
+      });
 
-      for (const [addr, sigBytes] of Object.entries(
-        signedKitTx.signatures as Record<string, Uint8Array | null>
-      )) {
-        if (sigBytes) {
-          signedTx.addSignature(new PublicKey(addr), Buffer.from(sigBytes));
-        }
-      }
-
-      return signedTx;
+      return new VersionedTransaction(message, signatures);
     },
-    signAllTransactions: async (
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      txs: any[]
-    ) => {
+    signAllTransactions: async (txs: any[]) => {
       if (!walletSession.signTransaction)
         throw new Error("Wallet does not support signing");
 
@@ -75,7 +69,6 @@ export function createProgram(walletSession: WalletSession) {
       for (const tx of txs) {
         const msgBytes = tx.serializeMessage();
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const kitTx: any = {
           messageBytes: new Uint8Array(msgBytes),
           signatures: {} as Record<string, Uint8Array | null>,
@@ -90,22 +83,23 @@ export function createProgram(walletSession: WalletSession) {
 
         const signedKitTx = await walletSession.signTransaction(kitTx);
 
-        const message = Message.from(new Uint8Array(signedKitTx.messageBytes));
-        const signedTx = Transaction.populate(message, []);
+        const returnedMsgBytes = new Uint8Array(signedKitTx.messageBytes);
+        const message = VersionedMessage.deserialize(returnedMsgBytes);
+        const sigMap = signedKitTx.signatures as Record<string, Uint8Array | null>;
+        const requiredSigners = message.staticAccountKeys.slice(
+          0,
+          message.header.numRequiredSignatures
+        );
+        const signatures: Uint8Array[] = requiredSigners.map((signer: any) => {
+          const sig = sigMap[signer.toBase58()];
+          return sig ? new Uint8Array(sig) : new Uint8Array(64);
+        });
 
-        for (const [addr, sigBytes] of Object.entries(
-          signedKitTx.signatures as Record<string, Uint8Array | null>
-        )) {
-          if (sigBytes) {
-            signedTx.addSignature(new PublicKey(addr), Buffer.from(sigBytes));
-          }
-        }
-
-        results.push(signedTx);
+        results.push(new VersionedTransaction(message, signatures));
       }
+
       return results;
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 
   const provider = new AnchorProvider(connection, anchorWallet, {

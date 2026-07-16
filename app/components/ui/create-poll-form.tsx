@@ -29,8 +29,9 @@ export function CreatePollForm({
   const [error, setError] = useState<string | null>(null);
   const [txSignature, setTxSignature] = useState<string | null>(null);
 
-  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
+    const session = getSession(wallet);
     if (!session) {
       setError("Connect a wallet first.");
       return;
@@ -84,7 +85,7 @@ export function CreatePollForm({
       setTitle("");
       setDescription("");
       setStartInMin("0");
-      setDurationMin("1440");
+      setDurationMin("10");
       onCreatedAction();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create poll");
@@ -205,7 +206,7 @@ export function CreatePollForm({
             target="_blank"
             rel="noreferrer"
           >
-            View on Solana Explorer \u2192
+            View on Solana Explorer
           </a>
         </div>
       ) : null}

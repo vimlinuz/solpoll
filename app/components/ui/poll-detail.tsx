@@ -185,7 +185,8 @@ export function PollDetail({ pollId }: Props) {
             <div className="flex justify-between text-sm">
               <span className="font-medium text-foreground">Up Vote</span>
               <span className="text-muted">
-                {poll.totalUpVote} ({calcPercent(poll.totalUpVote, poll.totalVote)})
+                {poll.totalUpVote} (
+                {calcPercent(poll.totalUpVote, poll.totalVote)})
               </span>
             </div>
             <div className="h-2.5 w-full rounded-full bg-surface-alt">
@@ -201,7 +202,8 @@ export function PollDetail({ pollId }: Props) {
             <div className="flex justify-between text-sm">
               <span className="font-medium text-foreground">Down Vote</span>
               <span className="text-muted">
-                {poll.totalDownVote} ({calcPercent(poll.totalDownVote, poll.totalVote)})
+                {poll.totalDownVote} (
+                {calcPercent(poll.totalDownVote, poll.totalVote)})
               </span>
             </div>
             <div className="h-2.5 w-full rounded-full bg-surface-alt">
@@ -272,9 +274,7 @@ export function PollDetail({ pollId }: Props) {
       ) : null}
 
       {!started ? (
-        <p className="text-sm text-muted">
-          This poll has not started yet.
-        </p>
+        <p className="text-sm text-muted">This poll has not started yet.</p>
       ) : null}
 
       {txSignature ? (
@@ -286,7 +286,7 @@ export function PollDetail({ pollId }: Props) {
             target="_blank"
             rel="noreferrer"
           >
-            View on Solana Explorer \u2192
+            View on Solana Explorer
           </a>
         </div>
       ) : null}
