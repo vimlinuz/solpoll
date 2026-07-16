@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { Loader2 } from "lucide-react";
 import { BN } from "@coral-xyz/anchor";
 import { useWallet } from "@solana/react-hooks";
 import type { WalletSession } from "@solana/client";
@@ -268,7 +269,7 @@ export function PollDetail({ pollId }: Props) {
             disabled={sending}
             className="rounded-lg bg-warning px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
           >
-            {sending ? "Closing\u2026" : "Close Poll"}
+            {sending ? <><Loader2 size={16} className="inline animate-spin" /> Closing</> : "Close Poll"}
           </button>
         </div>
       ) : null}

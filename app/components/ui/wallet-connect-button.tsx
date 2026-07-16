@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 import {
   useConnectWallet,
   useDisconnectWallet,
@@ -65,7 +66,7 @@ export function WalletConnectButton() {
         ) : (
           <span>Connect wallet</span>
         )}
-        <span className="text-xs text-muted">{open ? "\u25b2" : "\u25bc"}</span>
+        <span className="text-xs text-muted">{open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</span>
       </button>
 
       {open ? (

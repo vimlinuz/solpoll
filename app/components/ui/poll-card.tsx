@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { Loader2 } from "lucide-react";
 import type { WalletSession } from "@solana/client";
 import { createProgram } from "@/lib/anchor";
 import {
@@ -19,6 +20,7 @@ export function PollList({ walletSession }: Props) {
   const [polls, setPolls] = useState<DecodedPoll[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<"all" | "active" | "closed">("all");
   const mounted = useRef(false);
 
   const fetchPolls = useCallback(async () => {
@@ -72,43 +74,73 @@ export function PollList({ walletSession }: Props) {
         <p className="text-sm font-semibold text-danger">{error}</p>
       ) : null}
 
-      {loading && polls.length === 0 ? (
-        <p className="text-sm text-muted">Loading polls</p>
-      ) : polls.length === 0 ? (
-        <p className="text-sm text-muted">No polls found. Create one above.</p>
-      ) : (
-        <div className="space-y-2">
-          {polls.map((poll) => (
-            <Link
-              key={poll.pollId}
-              href={`/polls/${poll.pollId}`}
-              className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-3 transition hover:border-border hover:bg-background"
-            >
-              <div className="space-y-0.5">
-                <p className="text-sm font-semibold text-foreground">
-                  {poll.title}
-                </p>
-                <p className="text-xs text-muted">
-                  {formatTimestamp(poll.startTime)} -{" "}
-                  {formatTimestamp(poll.endTime)}
-                </p>
-              </div>
-              <div className="flex items-center gap-3 text-xs">
-                <span className="text-muted">{poll.totalVote} votes</span>
-                <span
-                  className={`rounded-full px-2 py-0.5 font-semibold ${
-                    isPollActive(poll.stateRaw)
-                      ? "bg-success/20 text-success"
-                      : "bg-surface-alt text-muted"
-                  }`}
-                >
-                  {poll.state}
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+      <div className="flex gap-1 rounded-lg bg-surface p-1 text-sm">
+        {(["all", "active", "closed"] as const).map((tab) => (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => setFilter(tab)}
+            className={`flex-1 rounded-md px-3 py-1.5 font-medium capitalize transition ${
+              filter === tab
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted hover:text-foreground"
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {(() => {
+        const filtered =
+          filter === "all"
+            ? polls
+            : polls.filter((p) =>
+                filter === "active"
+                  ? isPollActive(p.stateRaw)
+                  : !isPollActive(p.stateRaw)
+              );
+
+        return loading && filtered.length === 0 ? (
+          <p className="text-sm text-muted"><Loader2 size={16} className="inline animate-spin" /> Loading polls</p>
+        ) : filtered.length === 0 ? (
+          <p className="text-sm text-muted">
+            No {filter === "all" ? "" : filter} polls found.
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {filtered.map((poll) => (
+              <Link
+                key={poll.pollId}
+                href={`/polls/${poll.pollId}`}
+                className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-3 transition hover:border-border hover:bg-background"
+              >
+                <div className="space-y-0.5">
+                  <p className="text-sm font-semibold text-foreground">
+                    {poll.title}
+                  </p>
+                  <p className="text-xs text-muted">
+                    {formatTimestamp(poll.startTime)} -{" "}
+                    {formatTimestamp(poll.endTime)}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3 text-xs">
+                  <span className="text-muted">{poll.totalVote} votes</span>
+                  <span
+                    className={`rounded-full px-2 py-0.5 font-semibold ${
+                      isPollActive(poll.stateRaw)
+                        ? "bg-success/20 text-success"
+                        : "bg-surface-alt text-muted"
+                    }`}
+                  >
+                    {poll.state}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        );
+      })()}
     </section>
   );
 }

@@ -2,6 +2,7 @@
 
 import { address } from "@solana/kit";
 import { useState } from "react";
+import { Loader2, ArrowRight } from "lucide-react";
 import { useSolTransfer, useWallet } from "@solana/react-hooks";
 
 const LAMPORTS_PER_SOL = 1_000_000_000;
@@ -105,7 +106,7 @@ export function SolTransferCard() {
           disabled={wallet.status !== "connected" || isSending}
           className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {isSending ? "Sending\u2026" : "Send SOL"}
+          {isSending ? <><Loader2 size={16} className="inline animate-spin" /> Sending</> : "Send SOL"}
         </button>
       </div>
       {signature ? (
@@ -117,7 +118,7 @@ export function SolTransferCard() {
             target="_blank"
             rel="noreferrer"
           >
-            View on Solana Explorer \u2192
+            View on Solana Explorer <ArrowRight size={14} className="inline" />
           </a>
         </div>
       ) : null}
