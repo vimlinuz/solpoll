@@ -126,7 +126,7 @@ export function PollDetail({ pollId }: Props) {
   }
 
   if (loading) {
-    return <p className="text-sm text-muted">Loading poll\u2026</p>;
+    return <p className="text-sm text-muted">Loading poll</p>;
   }
 
   if (error) {

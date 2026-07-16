@@ -28,7 +28,10 @@ export function PollList({ walletSession }: Props) {
     try {
       const program = createProgram(walletSession);
       const data = await fetchAllPolls(program);
-      if (mounted.current) setPolls(data);
+      if (mounted.current) {
+        data.sort((a, b) => b.endTime - a.endTime);
+        setPolls(data);
+      }
     } catch (err) {
       if (mounted.current)
         setError(err instanceof Error ? err.message : "Failed to fetch polls");
