@@ -193,7 +193,13 @@ export function CreatePollForm({
             suppressHydrationWarning
             className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {sending ? <><Loader2 size={16} className="inline animate-spin" /> Creating</> : "Create Poll"}
+            {sending ? (
+              <>
+                <Loader2 size={16} className="inline animate-spin" /> Creating
+              </>
+            ) : (
+              "Create Poll"
+            )}
           </button>
         </div>
       </form>
