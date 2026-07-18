@@ -26,7 +26,12 @@ export function PollList() {
     setLoading(true);
     setError(null);
     try {
-      const program = createProgram({ publicKey, signTransaction, signAllTransactions: async (txs) => Promise.all(txs.map((tx) => signTransaction(tx))) });
+      const program = createProgram({
+        publicKey,
+        signTransaction,
+        signAllTransactions: async (txs) =>
+          Promise.all(txs.map((tx) => signTransaction(tx))),
+      });
       const data = await fetchAllPolls(program);
       if (mounted.current) {
         data.sort((a, b) => b.endTime - a.endTime);
@@ -96,11 +101,13 @@ export function PollList() {
             : polls.filter((p) =>
                 filter === "active"
                   ? isPollActive(p.stateRaw)
-                  : !isPollActive(p.stateRaw)
+                  : !isPollActive(p.stateRaw),
               );
 
         return loading && filtered.length === 0 ? (
-          <p className="text-sm text-muted"><Loader2 size={16} className="inline animate-spin" /> Loading polls</p>
+          <p className="text-sm text-muted">
+            <Loader2 size={16} className="inline animate-spin" /> Loading polls
+          </p>
         ) : filtered.length === 0 ? (
           <p className="text-sm text-muted">
             No {filter === "all" ? "" : filter} polls found.

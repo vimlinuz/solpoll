@@ -10,8 +10,12 @@ export const PROGRAM_ID = "FQC1y8nNHPZqYtc7aTJ7rRkRwVqZdtevjg1dHCEKiB6x";
 
 interface AnchorWallet {
   publicKey: web3.PublicKey;
-  signTransaction<T extends web3.Transaction | web3.VersionedTransaction>(tx: T): Promise<T>;
-  signAllTransactions<T extends web3.Transaction | web3.VersionedTransaction>(txs: T[]): Promise<T[]>;
+  signTransaction<T extends web3.Transaction | web3.VersionedTransaction>(
+    tx: T,
+  ): Promise<T>;
+  signAllTransactions<T extends web3.Transaction | web3.VersionedTransaction>(
+    txs: T[],
+  ): Promise<T[]>;
 }
 
 function createConnection() {

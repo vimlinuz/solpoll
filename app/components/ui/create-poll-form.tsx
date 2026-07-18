@@ -62,7 +62,8 @@ export function CreatePollForm({
       const program = createProgram({
         publicKey,
         signTransaction,
-        signAllTransactions: async (txs) => Promise.all(txs.map((tx) => signTransaction(tx))),
+        signAllTransactions: async (txs) =>
+          Promise.all(txs.map((tx) => signTransaction(tx))),
       });
       const pollId = new BN(nowUnixSeconds());
 
@@ -72,7 +73,7 @@ export function CreatePollForm({
           trimmedTitle,
           trimmedDesc,
           new BN(start),
-          new BN(end)
+          new BN(end),
         )
         .rpc();
 

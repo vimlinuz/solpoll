@@ -1,9 +1,9 @@
 use anchor_lang::prelude::*;
 
 use crate::{
+    PollState, VoterState,
     error::PollError,
     state::{Poll, VoteType},
-    PollState, VoterState,
 };
 
 #[derive(Accounts)]

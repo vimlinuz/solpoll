@@ -39,7 +39,12 @@ export function PollDetail({ pollId }: Props) {
     setLoading(true);
     setError(null);
     try {
-      const program = createProgram({ publicKey, signTransaction, signAllTransactions: async (txs) => Promise.all(txs.map((tx) => signTransaction(tx))) });
+      const program = createProgram({
+        publicKey,
+        signTransaction,
+        signAllTransactions: async (txs) =>
+          Promise.all(txs.map((tx) => signTransaction(tx))),
+      });
       const pollData = await fetchPollById(program, new BN(pollId));
       if (!mounted.current) return;
       setPoll(pollData);
@@ -48,7 +53,7 @@ export function PollDetail({ pollId }: Props) {
         const voterData = await fetchVoterState(
           program,
           new BN(pollId),
-          program.provider.publicKey
+          program.provider.publicKey,
         );
         if (mounted.current) setVoterState(voterData);
       }
@@ -80,7 +85,12 @@ export function PollDetail({ pollId }: Props) {
     setTxSignature(null);
     setSending(true);
     try {
-      const program = createProgram({ publicKey: publicKey!, signTransaction: signTransaction!, signAllTransactions: async (txs) => Promise.all(txs.map((tx) => signTransaction(tx))) });
+      const program = createProgram({
+        publicKey: publicKey!,
+        signTransaction: signTransaction!,
+        signAllTransactions: async (txs) =>
+          Promise.all(txs.map((tx) => signTransaction(tx))),
+      });
       const sig = await program.methods
         .castVote(new BN(pollId), voteType)
         .rpc();
@@ -88,7 +98,7 @@ export function PollDetail({ pollId }: Props) {
       await fetchData();
     } catch (err) {
       setActionError(
-        err instanceof Error ? err.message : "Failed to cast vote"
+        err instanceof Error ? err.message : "Failed to cast vote",
       );
     } finally {
       setSending(false);
@@ -104,13 +114,18 @@ export function PollDetail({ pollId }: Props) {
     setTxSignature(null);
     setSending(true);
     try {
-      const program = createProgram({ publicKey: publicKey!, signTransaction: signTransaction!, signAllTransactions: async (txs) => Promise.all(txs.map((tx) => signTransaction(tx))) });
+      const program = createProgram({
+        publicKey: publicKey!,
+        signTransaction: signTransaction!,
+        signAllTransactions: async (txs) =>
+          Promise.all(txs.map((tx) => signTransaction(tx))),
+      });
       const sig = await program.methods.closePoll(new BN(pollId)).rpc();
       setTxSignature(sig);
       await fetchData();
     } catch (err) {
       setActionError(
-        err instanceof Error ? err.message : "Failed to close poll"
+        err instanceof Error ? err.message : "Failed to close poll",
       );
     } finally {
       setSending(false);
@@ -260,7 +275,13 @@ export function PollDetail({ pollId }: Props) {
             disabled={sending}
             className="rounded-lg bg-warning px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
           >
-            {sending ? <><Loader2 size={16} className="inline animate-spin" /> Closing</> : "Close Poll"}
+            {sending ? (
+              <>
+                <Loader2 size={16} className="inline animate-spin" /> Closing
+              </>
+            ) : (
+              "Close Poll"
+            )}
           </button>
         </div>
       ) : null}

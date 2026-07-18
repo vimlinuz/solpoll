@@ -70,13 +70,13 @@ export async function fetchAllPolls(program: any): Promise<DecodedPoll[]> {
 
 export async function fetchPollById(
   program: any,
-  pollId: BN
+  pollId: BN,
 ): Promise<DecodedPoll | null> {
   try {
     const pollIdBytes = new BN(pollId).toArrayLike(Buffer, "le", 8);
     const [pda] = PublicKey.findProgramAddressSync(
       [Buffer.from("poll"), pollIdBytes],
-      new PublicKey(program.programId.toString())
+      new PublicKey(program.programId.toString()),
     );
     const account = await program.account.poll.fetch(pda);
     return decodePoll({ publicKey: pda, account });
@@ -88,13 +88,13 @@ export async function fetchPollById(
 export async function fetchVoterState(
   program: any,
   pollId: BN,
-  voterPubkey: any
+  voterPubkey: any,
 ): Promise<any | null> {
   try {
     const pollIdBytes = new BN(pollId).toArrayLike(Buffer, "le", 8);
     const [pda] = PublicKey.findProgramAddressSync(
       [Buffer.from("voter"), voterPubkey.toBuffer(), pollIdBytes],
-      new PublicKey(program.programId.toString())
+      new PublicKey(program.programId.toString()),
     );
     return await program.account.voterState.fetch(pda);
   } catch {

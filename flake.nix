@@ -25,7 +25,7 @@
         inherit system overlays;
       };
 
-      treefmtEval = pkgs: treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
+      treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
 
       naerskLib = pkgs.callPackage naersk { };
 
@@ -79,15 +79,9 @@
           export PATH="$HOME/.cargo/bin:$PATH"
         '';
       };
-      # formatter = pkgs.rustfmt;
-
       # for `nix fmt`
-      formatter = (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
+      formatter.${system} = treefmtEval.config.build.wrapper;
       # for `nix flake check`
-      checks = (
-        pkgs: {
-          formatting = treefmtEval.${pkgs.system}.config.build.check self;
-        }
-      );
+      checks.${system}.formatting = treefmtEval.config.build.check self;
     };
 }
