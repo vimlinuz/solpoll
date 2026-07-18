@@ -43,6 +43,9 @@
         pkgs.libxi
         pkgs.zenity
       ];
+
+      rust-toolchain = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+
     in
     {
       packages.${system}.default = naerskLib.buildPackage {
@@ -60,7 +63,8 @@
           # GUI dialog tool for build notifications
           pkgs.zenity
 
-          pkgs.rust-bin.stable.latest.default # Stable rust, default profile. If not sure, always choose this.
+          rust-toolchain
+          # pkgs.rust-bin.stable.latest.default # Stable rust, default profile. If not sure, always choose this.
           # rust-bin.beta.latest.default   # Wanna test beta compiler.
           # rust-bin.stable.latest.minimal # I don't need anything other than rustc, cargo, rust-std. Bye rustfmt, clippy, etc.
           # rust-bin.beta.latest.minimal
