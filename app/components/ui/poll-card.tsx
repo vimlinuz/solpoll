@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Loader2 } from "lucide-react";
-import type { WalletSession } from "@solana/client";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { createProgram } from "@/lib/anchor";
 import {
   fetchAllPolls,
@@ -12,23 +12,21 @@ import {
 } from "@/lib/fetchPolls";
 import Link from "next/link";
 
-interface Props {
-  walletSession?: WalletSession | null;
-}
-
-export function PollList({ walletSession }: Props) {
+export function PollList() {
   const [polls, setPolls] = useState<DecodedPoll[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "active" | "closed">("all");
   const mounted = useRef(false);
 
+  const { publicKey, signTransaction, signAllTransactions } = useWallet();
+
   const fetchPolls = useCallback(async () => {
-    if (!walletSession) return;
+    if (!publicKey || !signTransaction) return;
     setLoading(true);
     setError(null);
     try {
-      const program = createProgram(walletSession);
+      const program = createProgram({ publicKey, signTransaction, signAllTransactions: async (txs) => Promise.all(txs.map((tx) => signTransaction(tx))) });
       const data = await fetchAllPolls(program);
       if (mounted.current) {
         data.sort((a, b) => b.endTime - a.endTime);
@@ -40,7 +38,7 @@ export function PollList({ walletSession }: Props) {
     } finally {
       if (mounted.current) setLoading(false);
     }
-  }, [walletSession]);
+  }, [publicKey, signTransaction, signAllTransactions]);
 
   useEffect(() => {
     mounted.current = true;

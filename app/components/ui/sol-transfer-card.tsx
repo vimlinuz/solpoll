@@ -1,11 +1,10 @@
 "use client";
 
-import { address } from "@solana/kit";
 import { useState } from "react";
 import { Loader2, ArrowRight } from "lucide-react";
-import { useSolTransfer, useWallet } from "@solana/react-hooks";
-
-const LAMPORTS_PER_SOL = 1_000_000_000;
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { web3 } from "@coral-xyz/anchor";
+const { PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL } = web3;
 
 function parseLamports(input: string) {
   const value = Number(input);
@@ -15,17 +14,18 @@ function parseLamports(input: string) {
 }
 
 export function SolTransferCard() {
-  const wallet = useWallet();
-  const { send, isSending, signature } = useSolTransfer();
+  const { publicKey, sendTransaction } = useWallet();
+  const { connection } = useConnection();
+  const [isSending, setIsSending] = useState(false);
+  const [signature, setSignature] = useState<string | null>(null);
   const [destination, setDestination] = useState("");
   const [amount, setAmount] = useState("0.001");
   const [error, setError] = useState<string | null>(null);
 
-  const statusText =
-    wallet.status === "connected" ? "Wallet connected" : "Wallet disconnected";
+  const statusText = publicKey ? "Wallet connected" : "Wallet disconnected";
 
   async function sendSol() {
-    if (wallet.status !== "connected") {
+    if (!publicKey) {
       setError("Connect a wallet first.");
       return;
     }
@@ -40,14 +40,24 @@ export function SolTransferCard() {
       return;
     }
     setError(null);
+    setIsSending(true);
     try {
-      await send({
-        destination: address(dest),
-        amount: lamports,
-      });
+      const tx = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: publicKey,
+          toPubkey: new PublicKey(dest),
+          lamports: Number(lamports),
+        }),
+      );
+
+      const sig = await sendTransaction(tx, connection);
+      await connection.confirmTransaction(sig, "confirmed");
+      setSignature(sig);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to send SOL");
       return;
+    } finally {
+      setIsSending(false);
     }
     setAmount("0.001");
   }
@@ -103,7 +113,7 @@ export function SolTransferCard() {
         <button
           type="button"
           onClick={() => void sendSol()}
-          disabled={wallet.status !== "connected" || isSending}
+          disabled={!publicKey || isSending}
           className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isSending ? <><Loader2 size={16} className="inline animate-spin" /> Sending</> : "Send SOL"}

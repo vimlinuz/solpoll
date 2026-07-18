@@ -3,25 +3,16 @@
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { BN } from "@coral-xyz/anchor";
-import { useWallet } from "@solana/react-hooks";
-import type { WalletSession } from "@solana/client";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { createProgram } from "@/lib/anchor";
 import { nowUnixSeconds } from "@/lib/fetchPolls";
-
-function getSession(
-  wallet: ReturnType<typeof useWallet>
-): WalletSession | null {
-  if (wallet.status === "connected") return wallet.session;
-  return null;
-}
 
 export function CreatePollForm({
   onCreatedAction,
 }: {
   onCreatedAction: () => void;
 }) {
-  const wallet = useWallet();
-  const session = getSession(wallet);
+  const { publicKey, signTransaction, signAllTransactions } = useWallet();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [startInMin, setStartInMin] = useState("0");
@@ -32,8 +23,7 @@ export function CreatePollForm({
 
   async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
-    const session = getSession(wallet);
-    if (!session) {
+    if (!publicKey || !signTransaction) {
       setError("Connect a wallet first.");
       return;
     }
@@ -69,7 +59,11 @@ export function CreatePollForm({
     setTxSignature(null);
 
     try {
-      const program = createProgram(session);
+      const program = createProgram({
+        publicKey,
+        signTransaction,
+        signAllTransactions: async (txs) => Promise.all(txs.map((tx) => signTransaction(tx))),
+      });
       const pollId = new BN(nowUnixSeconds());
 
       const sig = await program.methods
@@ -189,7 +183,7 @@ export function CreatePollForm({
           </p>
           <button
             type="submit"
-            disabled={!session || sending}
+            disabled={!publicKey || sending}
             suppressHydrationWarning
             className="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-white hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
           >

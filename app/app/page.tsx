@@ -1,23 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useWallet } from "@solana/react-hooks";
-import type { WalletSession } from "@solana/client";
 import { WalletConnectButton } from "@/components/ui/wallet-connect-button";
 import { CreatePollForm } from "@/components/ui/create-poll-form";
 import { PollList } from "@/components/ui/poll-card";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
-function useWalletSession(): WalletSession | undefined {
-  const wallet = useWallet();
-  if (wallet.status === "connected") {
-    return wallet.session;
-  }
-  return undefined;
-}
-
 export default function HomePage() {
-  const walletSession = useWalletSession();
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleCreated = () => {
@@ -53,7 +42,7 @@ export default function HomePage() {
       </section>
 
       <CreatePollForm onCreatedAction={handleCreated} />
-      <PollList key={refreshKey} walletSession={walletSession} />
+      <PollList key={refreshKey} />
     </main>
   );
 }

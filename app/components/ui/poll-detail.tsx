@@ -3,8 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Loader2 } from "lucide-react";
 import { BN } from "@coral-xyz/anchor";
-import { useWallet } from "@solana/react-hooks";
-import type { WalletSession } from "@solana/client";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { createProgram } from "@/lib/anchor";
 import {
   fetchPollById,
@@ -18,21 +17,13 @@ interface Props {
   pollId: string;
 }
 
-function getSession(
-  wallet: ReturnType<typeof useWallet>
-): WalletSession | null {
-  if (wallet.status === "connected") return wallet.session;
-  return null;
-}
-
 function calcPercent(part: number, total: number): string {
   if (total === 0) return "0%";
   return ((part / total) * 100).toFixed(1) + "%";
 }
 
 export function PollDetail({ pollId }: Props) {
-  const wallet = useWallet();
-  const session = getSession(wallet);
+  const { publicKey, signTransaction, signAllTransactions } = useWallet();
   const [poll, setPoll] = useState<DecodedPoll | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [voterState, setVoterState] = useState<any | null>(null);
@@ -44,11 +35,11 @@ export function PollDetail({ pollId }: Props) {
   const mounted = useRef(false);
 
   const fetchData = useCallback(async () => {
-    if (!session) return;
+    if (!publicKey || !signTransaction) return;
     setLoading(true);
     setError(null);
     try {
-      const program = createProgram(session);
+      const program = createProgram({ publicKey, signTransaction, signAllTransactions: async (txs) => Promise.all(txs.map((tx) => signTransaction(tx))) });
       const pollData = await fetchPollById(program, new BN(pollId));
       if (!mounted.current) return;
       setPoll(pollData);
@@ -67,7 +58,7 @@ export function PollDetail({ pollId }: Props) {
     } finally {
       if (mounted.current) setLoading(false);
     }
-  }, [session, pollId]);
+  }, [publicKey, signTransaction, signAllTransactions, pollId]);
 
   useEffect(() => {
     mounted.current = true;
@@ -81,7 +72,7 @@ export function PollDetail({ pollId }: Props) {
   const [now] = useState(() => Math.floor(Date.now() / 1000));
 
   async function castVote(voteType: object) {
-    if (!session) {
+    if (!publicKey || !signTransaction) {
       setActionError("Connect a wallet first.");
       return;
     }
@@ -89,7 +80,7 @@ export function PollDetail({ pollId }: Props) {
     setTxSignature(null);
     setSending(true);
     try {
-      const program = createProgram(session);
+      const program = createProgram({ publicKey: publicKey!, signTransaction: signTransaction!, signAllTransactions: async (txs) => Promise.all(txs.map((tx) => signTransaction(tx))) });
       const sig = await program.methods
         .castVote(new BN(pollId), voteType)
         .rpc();
@@ -105,7 +96,7 @@ export function PollDetail({ pollId }: Props) {
   }
 
   async function handleClose() {
-    if (!session) {
+    if (!publicKey || !signTransaction) {
       setActionError("Connect a wallet first.");
       return;
     }
@@ -113,7 +104,7 @@ export function PollDetail({ pollId }: Props) {
     setTxSignature(null);
     setSending(true);
     try {
-      const program = createProgram(session);
+      const program = createProgram({ publicKey: publicKey!, signTransaction: signTransaction!, signAllTransactions: async (txs) => Promise.all(txs.map((tx) => signTransaction(tx))) });
       const sig = await program.methods.closePoll(new BN(pollId)).rpc();
       setTxSignature(sig);
       await fetchData();
